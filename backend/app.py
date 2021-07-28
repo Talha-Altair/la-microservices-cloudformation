@@ -12,7 +12,7 @@ app = Flask(__name__)
 @app.route('/ping')
 def ping_pong():
 
-    return jsonify({"ping":"Altair"})
+    return jsonify({"ping":"talha"})
 
 def get_json():
 

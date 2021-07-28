@@ -14,7 +14,7 @@ app = Flask(__name__)
 @app.route('/ping')
 def ping_pong():
 
-    return jsonify({"ping":"talha"})
+    return jsonify({"ping":"altair"})
 
 @app.route('/')
 def start():
