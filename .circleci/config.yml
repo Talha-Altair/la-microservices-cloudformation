@@ -36,12 +36,12 @@ jobs:
           repo: 'la-backend'
           region: AWS_REGION
           tag: '${CIRCLE_SHA1},latest'
-      # - aws-ecs/update-service:
-      #     family: '<< parameters.env_env >>-kde20-api'
-      #     cluster-name: 'KDE-<< parameters.env_env >>'
-      #     service-name: 'srv-kde20-api'
-      #     # skip-task-definition-registration: true
-      #     container-image-name-updates: 'container=kde20-api,tag=${CIRCLE_SHA1},image=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
+      - aws-ecs/update-service:
+          family: 'la-backend-task'
+          cluster-name: 'la-microservices'
+          service-name: 'la-backend-service'
+          skip-task-definition-registration: true
+          container-image-name-updates: 'container=la-backend-container,tag=${CIRCLE_SHA1},image=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
 workflows: # testing
   build_and_push:
     jobs:
