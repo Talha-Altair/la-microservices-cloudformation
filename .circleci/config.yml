@@ -33,10 +33,6 @@ jobs:
           dockerfile: Dockerfile
           path: ./backend/.
           profile-name: default
-          environment:
-            BACKEND_PORT: 7500
-            FRONTEND_PORT: 8500
-            BACKEND_URL: 'http://la-backend-service.api:5000'
           repo: 'la-backend'
           region: AWS_REGION
           tag: 'tact-${CIRCLE_SHA1}'
@@ -51,10 +47,6 @@ jobs:
           create-repo: false
           dockerfile: Dockerfile
           path: ./frontend/.
-          environment:
-            BACKEND_PORT: 7500
-            FRONTEND_PORT: 8500
-            BACKEND_URL: 'http://la-backend-service.api:5000'
           profile-name: default
           repo: 'la-frontend'
           region: AWS_REGION
