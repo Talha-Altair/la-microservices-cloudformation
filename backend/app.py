@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-PORT = os.environ.get('BACKEND_PORT')
+PORT = 7500
 
 app = Flask(__name__)
 

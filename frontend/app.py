@@ -6,8 +6,8 @@ import os
 
 load_dotenv()
 
-URL =  os.environ.get('BACKEND_URL')
-PORT = os.environ.get('FRONTEND_PORT')
+URL =  'http://la-backend-service.api:7500'
+PORT = 8500
 
 app = Flask(__name__)
 
