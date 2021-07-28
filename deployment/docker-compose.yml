@@ -1,0 +1,28 @@
+version: '3.3'
+
+services:
+
+    frontend:
+        build: ../frontend/.
+        container_name: la-microservice-frontend
+        ports:
+            - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+        depends_on:
+            - backend
+        links: 
+            - backend
+        networks: 
+            - tact
+
+    backend:
+        build: ../backend/.
+        hostname: backend-service
+        container_name: la-microservice-backend
+        ports:
+            - "${BACKEND_PORT}:${BACKEND_PORT}"
+        networks: 
+            - tact
+
+networks:
+    tact:
+        driver: "bridge"
