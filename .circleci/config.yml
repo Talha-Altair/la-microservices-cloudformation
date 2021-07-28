@@ -35,13 +35,15 @@ jobs:
           profile-name: default
           repo: 'la-backend'
           region: AWS_REGION
-          tag: '${CIRCLE_SHA1},latest'
+          tag: '${CIRCLE_SHA1}'
       - aws-ecs/update-service:
           family: 'la-backend-task'
           cluster-name: 'la-microservices'
           service-name: 'la-backend-service'
           # skip-task-definition-registration: true
-          container-image-name-updates: 'container=la-backend-container-2,tag=${CIRCLE_SHA1},image=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
+          container-image-name-updates: 'container=la-backend-container,tag=${CIRCLE_SHA1}'
+          requires:
+            - aws-ecr/build-and-push-image
 workflows: # testing
   build_and_push:
     jobs:
