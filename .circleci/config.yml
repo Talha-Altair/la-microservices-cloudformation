@@ -42,8 +42,23 @@ jobs:
           service-name: 'la-backend-service'
           # skip-task-definition-registration: true
           container-image-name-updates: 'container=la-backend-container,tag=tact-${CIRCLE_SHA1}'
+      - aws-ecr/build-and-push-image:
+          account-url: AWS_ECR_ACCOUNT_URL
+          create-repo: false
+          dockerfile: Dockerfile
+          path: ./frontend/.
+          profile-name: default
+          repo: 'la-frontend'
+          region: AWS_REGION
+          tag: 'tact-${CIRCLE_SHA1}'
+      - aws-ecs/update-service:
+          family: 'la-frontend-task'
+          cluster-name: 'la-microservices'
+          service-name: 'la-frontend-service'
+          # skip-task-definition-registration: true
+          container-image-name-updates: 'container=la-frontend-container,tag=tact-${CIRCLE_SHA1}'
 workflows: # testing
   build_and_push:
     jobs:
-      - build_backend:
-          name: 'build_backend'
+      - build_frontend_and_backend:
+          name: 'build_frontend_and_backend'

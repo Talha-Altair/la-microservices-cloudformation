@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 import requests
 import json
 from dotenv import load_dotenv
@@ -10,6 +10,11 @@ URL =  os.environ.get('BACKEND_URL')
 PORT = os.environ.get('FRONTEND_PORT')
 
 app = Flask(__name__)
+
+@app.route('/ping')
+def ping_pong():
+
+    return jsonify({"ping":"Altair"})
 
 @app.route('/')
 def start():
