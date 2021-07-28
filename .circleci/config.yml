@@ -19,6 +19,10 @@ jobs:
           command: |
             git submodule init
             git submodule update --checkout
+          environment:
+            BACKEND_PORT: 7500
+            FRONTEND_PORT: 8500
+            BACKEND_URL: 'http://la-backend-service.api:5000'
       - aws-cli/install
       - aws-cli/configure:
           aws-access-key-id: AWS_ACCESS_KEY_ID
