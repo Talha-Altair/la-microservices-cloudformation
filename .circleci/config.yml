@@ -21,35 +21,29 @@ jobs:
             git submodule update --checkout
       - aws-cli/install
       - aws-cli/configure:
-          aws-access-key-id: ACCESS_KEY_ID_ENV_VAR_NAME
-          aws-secret-access-key: SECRET_ACCESS_KEY_ENV_VAR_NAME
-          aws-region: AWS_REGION_ENV_VAR_NAME
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY  
+          aws-region: AWS_REGION
       - checkout
       - setup_remote_docker:
           docker_layer_caching: false
       - aws-ecr/build-and-push-image:
-          account-url: AWS_ECR_ACCOUNT_URL_ENV_VAR_NAME
+          account-url: AWS_ECR_ACCOUNT_URL
           create-repo: false
           dockerfile: Dockerfile
-          path: .
+          path: ./backend/.
           profile-name: default
-          repo: 'kde2.0-api'
-          region: AWS_REGION_ENV_VAR_NAME
-          tag: '${CIRCLE_SHA1},latest-<< parameters.env_env >>'
-      - aws-ecs/update-service:
-          family: '<< parameters.env_env >>-kde20-api'
-          cluster-name: 'KDE-<< parameters.env_env >>'
-          service-name: 'srv-kde20-api'
-          # skip-task-definition-registration: true
-          container-image-name-updates: 'container=kde20-api,tag=${CIRCLE_SHA1},image=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
+          repo: 'la-backend'
+          region: AWS_REGION
+          tag: '${CIRCLE_SHA1},latest'
+      # - aws-ecs/update-service:
+      #     family: '<< parameters.env_env >>-kde20-api'
+      #     cluster-name: 'KDE-<< parameters.env_env >>'
+      #     service-name: 'srv-kde20-api'
+      #     # skip-task-definition-registration: true
+      #     container-image-name-updates: 'container=kde20-api,tag=${CIRCLE_SHA1},image=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
 workflows: # testing
   build_and_push:
     jobs:
       - build_backend:
-          name: 'build_qa'
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*-rc.*$/
-          env_env: 'qa'
+          name: 'build_backend'
