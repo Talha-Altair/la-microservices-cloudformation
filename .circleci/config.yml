@@ -40,8 +40,8 @@ jobs:
           family: 'la-backend-task'
           cluster-name: 'la-microservices'
           service-name: 'la-backend-service'
-          skip-task-definition-registration: true
-          container-image-name-updates: 'container=la-backend-container,tag=${CIRCLE_SHA1},image=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
+          # skip-task-definition-registration: true
+          container-image-name-updates: 'container=la-backend-container-2,tag=${CIRCLE_SHA1},image=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
 workflows: # testing
   build_and_push:
     jobs:
