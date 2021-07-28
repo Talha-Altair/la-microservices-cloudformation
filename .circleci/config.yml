@@ -10,9 +10,6 @@ orbs:
 jobs:
   build_la_backend:
     description: build and push to aws
-    parameters:
-      env_env:
-        type: string
     docker:
       - image: 'circleci/python:3.7.1'
     steps:
