@@ -8,7 +8,16 @@ orbs:
   aws-ecr: circleci/aws-ecr@7.0.0
   aws-ecs: circleci/aws-ecs@1.3.0
 jobs:
-  build_la_backend:
+  test:
+    description: testing bro
+    steps:
+      - run:
+          name: something
+          command: echo "10 + 12"
+    docker:
+      - image: 'circleci/python:3.7.1'
+
+  build_kde:
     description: build and push to aws
     docker:
       - image: 'circleci/python:3.7.1'
@@ -21,34 +30,37 @@ jobs:
             git submodule update --checkout
       - aws-cli/install
       - aws-cli/configure:
-          aws-access-key-id: AKIAYZXVYGIZC7QMPEQZ
-          aws-secret-access-key: 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
-          aws-region: ap-south-1
+          aws-access-key-id: ACCESS_KEY_ID_ENV_VAR_NAME
+          aws-secret-access-key: SECRET_ACCESS_KEY_ENV_VAR_NAME
+          aws-region: AWS_REGION_ENV_VAR_NAME
       - checkout
       - setup_remote_docker:
           docker_layer_caching: false
       - aws-ecr/build-and-push-image:
-          account-url: https://ap-south-1.console.aws.amazon.com
+          account-url: AWS_ECR_ACCOUNT_URL_ENV_VAR_NAME
           create-repo: false
           dockerfile: Dockerfile
-          path: ./backend/.
+          path: .
           profile-name: default
-          repo: 'la-backend'
-          region: ap-south-1
-          tag: '${CIRCLE_SHA1},latest'
+          repo: 'kde2.0-api'
+          region: AWS_REGION_ENV_VAR_NAME
+          tag: '${CIRCLE_SHA1},latest-<< parameters.env_env >>'
       - aws-ecs/update-service:
-          family: 'la-backend-task'
-          cluster-name: 'la-microservicesUpdate'
-          service-name: 'la-backend-service'
+          family: '<< parameters.env_env >>-kde20-api'
+          cluster-name: 'KDE-<< parameters.env_env >>'
+          service-name: 'srv-kde20-api'
           # skip-task-definition-registration: true
-          container-image-name-updates: 'container=la-backend-container,tag=${CIRCLE_SHA1},image=605032034866.dkr.ecr.ap-south-1.amazonaws.com'
+          container-image-name-updates: 'container=kde20-api,tag=${CIRCLE_SHA1},image=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
 workflows: # testing
   build_and_push:
     jobs:
-      - build_la_backend:
-          name: 'build-backend'
+      - test:
+          name: 'test-1'
+      - build_kde:
+          name: 'build_qa'
           filters:
             branches:
               ignore: /.*/
             tags:
               only: /^v.*-rc.*$/
+          env_env: 'qa'

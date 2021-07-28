@@ -1,0 +1,54 @@
+# Python CircleCI 2.1 configuration file
+#
+# Check https://circleci.com/docs/ for more details
+#
+version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@0.1.4
+  aws-ecr: circleci/aws-ecr@7.0.0
+  aws-ecs: circleci/aws-ecs@1.3.0
+jobs:
+  build_la_backend:
+    description: build and push to aws
+    docker:
+      - image: 'circleci/python:3.7.1'
+    steps:
+      - checkout
+      - run:
+          name: "Pull Submodules"
+          command: |
+            git submodule init
+            git submodule update --checkout
+      - aws-cli/install
+      - aws-cli/configure:
+          aws-access-key-id: AKIAYZXVYGIZC7QMPEQZ
+          aws-secret-access-key: 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
+          aws-region: ap-south-1
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: false
+      - aws-ecr/build-and-push-image:
+          account-url: https://ap-south-1.console.aws.amazon.com
+          create-repo: false
+          dockerfile: Dockerfile
+          path: ./backend/.
+          profile-name: default
+          repo: 'la-backend'
+          region: ap-south-1
+          tag: '${CIRCLE_SHA1},latest'
+      - aws-ecs/update-service:
+          family: 'la-backend-task'
+          cluster-name: 'la-microservicesUpdate'
+          service-name: 'la-backend-service'
+          # skip-task-definition-registration: true
+          container-image-name-updates: 'container=la-backend-container,tag=${CIRCLE_SHA1},image=605032034866.dkr.ecr.ap-south-1.amazonaws.com'
+workflows: # testing
+  build_and_push:
+    jobs:
+      - build_la_backend:
+          name: 'build-backend'
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*-rc.*$/
